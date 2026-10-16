@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pydantic>=2
+pydantic-settings
+typesafe-sdk
+google-api-python-client
+httpx
+pytest
+pytest-asyncio
