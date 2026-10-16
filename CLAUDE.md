@@ -64,7 +64,9 @@ backend/
     services/
       url_validator.py # URL -> video_id
       scraper.py       # comment fetching (YouTube API, bs4 fallback)
-      analyzer.py      # Jev questions + concurrent classification
+      jev_analyzer.py  # primary: Jev questions + concurrent classification
+      analyzer.py      # fallback: Groq batch classification (no Jev key)
+      summarizer.py    # Groq (langchain-groq) narrative summary, optional
       aggregate.py     # EDA: distributions, means, top comments
   tests/
   requirements.txt
@@ -94,12 +96,15 @@ npm run build
 
 ## Environment variables
 
-Backend `.env` (never commit):
+Backend `.env` (never commit; put real keys only here, never in `.env.example`):
 - `YOUTUBE_API_KEY`
-- `TYPESAFE_API_KEY` (from https://console.typesafe.ai/keys; the SDK reads it automatically)
+- `TYPESAFE_API_KEY` (from https://console.typesafe.ai/keys). Jev is the primary classifier; if unset, the Groq classifier is used as a fallback.
 - `TYPESAFE_DEFAULT_MODEL=jev-1.13.0`
+- `JEV_CONCURRENCY=8`
+- `GROQ_API_KEY` (writes the AI summary via `langchain-groq`; also the fallback classifier)
+- `GROQ_MODEL=openai/gpt-oss-20b` (summary model)
+- `CLASSIFY_MODELS=openai/gpt-oss-20b,openai/gpt-oss-120b` (fallback classifier rotation; Groq free tier is 8k tokens/min per model, and qwen misreads the output format)
 - `MAX_COMMENTS=1000`
-- `JEV_CONCURRENCY=16`
 - `CORS_ORIGINS=http://localhost:3000`
 
 Frontend `.env.local`:

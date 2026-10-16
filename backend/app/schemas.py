@@ -40,6 +40,7 @@ class SentimentSummary(BaseModel):
 
 class Analysis(BaseModel):
     video: VideoMeta
+    summary: str | None = None
     total_fetched: int
     classified: int
     unclassified: int
